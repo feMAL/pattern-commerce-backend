@@ -11,6 +11,8 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   const appConfig: AppConfigService = app.get<ConfigService>(ConfigService)['internalConfig']['app'];
+//  const mongoConfig: AppConfigService = app.get<ConfigService>(ConfigService)['internalConfig']['mongo'];
+
   const port = parseInt(appConfig.port);
 
   app.setGlobalPrefix(`${appConfig.context}`);
@@ -41,10 +43,10 @@ async function bootstrap() {
   if(appConfig.swaggerEnabled){
     const config = new DocumentBuilder()
     .addBearerAuth()
-    .setTitle('Base Seed')
-    .setDescription('Seed for any project with mongo')
-    .setVersion('1.0')
-    .addTag('seed')
+    .setTitle('Paz Patterns E-commerce')
+    .setDescription('Backend for sample e-commerce')
+    .setVersion('0.0.1')
+    .addTag('seed-v.0.0.1')
     .build();
   
     const document = SwaggerModule.createDocument(app, config,{

@@ -1,20 +1,27 @@
 import { Controller, Get, Param, Query } from "@nestjs/common";
-import { ApiOperation, ApiTags } from "@nestjs/swagger";
+import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { GetPatternsQuery } from "../dtos/patterns.dto";
+import { PatternService } from "../services/pattern.service";
 
 
 @ApiTags('Patterns')
 @Controller('core/patterns')
 export class PatternsController {
 
-    constructor() {}
+    constructor(
+        private patternService: PatternService,
+
+    ) {}
     
     @ApiOperation({
         summary: "Get All Products"
     })
+    @ApiResponse({
+        
+    })
     @Get('/product')
-    async getProducts(@Query() query: GetPatternsQuery) {
-
+    async getProducts(@Query() filter: GetPatternsQuery): Promise<any> {
+        return  await this.patternService.getAllProducts(filter);
     }
 
     @ApiOperation({
@@ -24,4 +31,6 @@ export class PatternsController {
     async getProductsbyId(@Param('productID') productID: string) {
 
     }
+
+
 }

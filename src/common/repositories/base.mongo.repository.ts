@@ -39,7 +39,7 @@ export abstract class MongoBaseRepository<T extends Document>{
         entityFilter: FilterQuery<unknown>,
         updateEntityData?: UpdateQuery<unknown>,
     ): Promise<T | null> {
-        return this.baseModel.findOneAndUpdate(entityFilter, { ...updateEntityData }, { new: true });
+        return this.baseModel.findOneAndUpdate(entityFilter, { ...updateEntityData, updatedAt: new Date() }, { new: true });
     }
     
     async findOneAndDelete(entityFilter: FilterQuery<T>): Promise<unknown | null> {

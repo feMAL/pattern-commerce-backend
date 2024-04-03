@@ -5,7 +5,6 @@ import { AppService } from './app.service';
 import { ConfigurationModule } from './config/configuration.module';
 
 import { CacheProviderModule } from './providers/cache/provider.module';
-
 import { UtilsModule } from './utils/utils.module';
 import { DatabaseModule } from './providers/database/database.module';
 
@@ -20,6 +19,8 @@ import { CoreModule } from './core/core.module';
     CoreModule
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+      AppService,
+    ],
 })
 export class AppModule {}

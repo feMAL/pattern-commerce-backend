@@ -23,5 +23,6 @@ export const validationSchema = Joi.object({
     APP_ALLOWED_METHODS: Joi.string().required(),
     APP_CORS_ENABLED: Joi.boolean().required(),
     APP_SWAGGER_ENABLED: Joi.boolean().required(),
-    APP_SWAGGER_PATH: Joi.string().required()
+    APP_SWAGGER_PATH: Joi.string().required(),
+    ACCESS_VALIDATION_URL: Joi.string().required()
 })

@@ -15,6 +15,10 @@ export class PatternVariantService {
         return await this.patternVariantRepo.findOne({_id: variantId})
     }
 
+    async findVariants (  ) {
+        return await this.patternVariantRepo.find({})
+    }
+
     async createVariantPattern(body: CreateVariantPatternDTO) {
         return await this.patternVariantRepo.create(body);
     }

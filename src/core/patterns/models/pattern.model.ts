@@ -16,7 +16,7 @@ export class Pattern extends Document {
     price: number;
 
     @Prop( {type: [String], default: []})
-    image: string;
+    images: string[];
     
     @Prop({type:Boolean, default: false})
     isExclusive: boolean;

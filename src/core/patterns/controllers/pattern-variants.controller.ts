@@ -16,10 +16,18 @@ export class PatternVariantController {
     @ApiOperation({
         summary: "Add Variant to Product"
     })
-    @Post('')
+    @Post()
     @ApiBody({type: CreateVariantPatternDTO})
     async addVariant ( @Body() body: CreateVariantPatternDTO): Promise<any>{
         return await this.patternVariantService.createVariantPattern(body);
+    }
+
+    @ApiOperation({
+        summary: "Get All Variant"
+    })
+    @Get()
+    async getVariants (): Promise<any>{
+        return await this.patternVariantService.findVariants();
     }
 
 }

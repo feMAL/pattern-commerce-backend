@@ -14,19 +14,18 @@ export class PatternTagsController {
     ) {}
 
     @ApiOperation({
-        summary: "Get All Products"
+        summary: "Get All Tags"
     })
     @ApiResponse({
-        
+        status:200
     })
     @Get()
     async getAllTags(): Promise<any> {
         return  await this.patternService.findAllTags();
     }
 
-
     @ApiOperation({
-        summary: "Get All Products"
+        summary: "Create Pattern Tags"
     })
     @ApiResponse({
         status: 200,

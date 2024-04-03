@@ -10,13 +10,16 @@ import { PatternTagsController } from "./controllers/patterns-tag.controller";
 import { PatternVariantService } from "./services/pattern-variant.service";
 import { PatternVariantRepository } from "./repos/pattern-variant.repo";
 import { PatternVariantController } from "./controllers/pattern-variants.controller";
+import { ConfigService } from "@nestjs/config";
+import { HttpModule } from "@nestjs/axios";
 
 
 @Module({
     imports: [
         MongooseModule.forFeature([{ name: Pattern.name, schema: PatternsSchema }]),
         MongooseModule.forFeature([{ name: PatternTag.name, schema: PatternTagSchema }]),
-        MongooseModule.forFeature([{ name: PatternVariant.name, schema: PatternVariantSchema }])
+        MongooseModule.forFeature([{ name: PatternVariant.name, schema: PatternVariantSchema }]),
+        HttpModule
     ],
     controllers: [
         PatternsController,
@@ -29,7 +32,8 @@ import { PatternVariantController } from "./controllers/pattern-variants.control
         PatternTagRepository,
         PatternTagService,
         PatternVariantRepository,
-        PatternVariantService
+        PatternVariantService,
+        ConfigService
     ]
 })
 export class PatternModule {}

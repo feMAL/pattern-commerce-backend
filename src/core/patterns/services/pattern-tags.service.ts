@@ -22,9 +22,7 @@ export class PatternTagService {
     }
 
     async findTag(id: string) {
-
         return await this.patternTagRepo.findOne({_id: id})
-        
     }
 
 

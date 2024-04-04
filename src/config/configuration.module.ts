@@ -9,6 +9,7 @@ import { AppConfigService } from "./app/configuration.service"
 
 import MongoDbConfig from './mongo/configuration';
 import AppConfig from './app/configuration';
+import ServicesConfig from './services/configuration';
 
 @Module({
     imports: [
@@ -17,7 +18,8 @@ import AppConfig from './app/configuration';
             ignoreEnvFile: process.env.NODE_ENV === 'production' || false,
             load: [
                 AppConfig,
-                MongoDbConfig
+                MongoDbConfig,
+                ServicesConfig
             ],
             validationSchema
         })

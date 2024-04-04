@@ -17,7 +17,7 @@ export class ContactController {
         type: CreateContactMessageDTO
     })
     async createContact (@Body() body: CreateContactMessageDTO ) {
-        return this.contactService.create()
+        return this.contactService.saveContact(body)
     }
 
 }

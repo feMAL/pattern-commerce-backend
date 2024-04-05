@@ -2,9 +2,9 @@ import { Prop, SchemaFactory, Schema } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
 
-export type PatternTagDocument = PatternTag  & Document;
+export type CategoryDocument = Category  & Document;
 @Schema()
-export class PatternTag extends Document {
+export class Category extends Document {
 
     @Prop({ type: String, required: true, unique: true})
     name: string;
@@ -20,4 +20,4 @@ export class PatternTag extends Document {
 
 }
 
-export const PatternTagSchema = SchemaFactory.createForClass(PatternTag);
+export const CategorySchema = SchemaFactory.createForClass(Category);

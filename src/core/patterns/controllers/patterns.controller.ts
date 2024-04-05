@@ -31,7 +31,7 @@ export class PatternsController {
 
     }
 
-    @UseGuards(AccessValidationGuard)
+    //@UseGuards(AccessValidationGuard)
     @ApiOperation({
         summary: "Create a new Product"
     })

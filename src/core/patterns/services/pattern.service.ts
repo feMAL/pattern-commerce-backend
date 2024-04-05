@@ -1,19 +1,28 @@
-import { CACHE_MANAGER, HttpException, Inject, Injectable } from "@nestjs/common";
+import { HttpException, Injectable } from "@nestjs/common";
 import { PatternRepository } from "../repos/pattern.repo";
-import { AddTagsToPatternDTO, AddVariantsToPatternDTO, CreatePatternDTO, GetPatternsDTO, UpdateVariantPatternDTO } from "../dtos";
+import { AddTagsToPatternDTO, AddVariantsToPatternDTO, CreatePatternDTO, CreatePatternVariantDTO, GetPatternsDTO, UpdateVariantPatternDTO } from "../dtos";
 import { PatternTagService } from "./pattern-tags.service";
 import { PatternVariantService } from "./pattern-variant.service";
 import { CacheService } from "src/utils/services/cache.service";
-import { Pattern } from "../models";
+import { Pattern, PatternVariant } from "../models";
+import { ErrorManager } from "../../../common/services/error.manager";
+import { Category } from "../models/category.model";
+import { CreateCategoryDTO } from "../dtos/category.dto";
+import { CategoryService } from "./category.service";
 
 @Injectable()
 export class PatternService {
 
     constructor(
-        private patternRepo: PatternRepository,
-        private patternTagService: PatternTagService,
-        private patternVariantService: PatternVariantService,
+        private readonly patternRepo: PatternRepository,
+        private readonly patternTagService: PatternTagService,
+        private readonly patternVariantService: PatternVariantService,
+        private readonly categoryService: CategoryService
         ) { }
+
+    async getPatternByIdentification(pattern_identification: string): Promise<Pattern> {
+        return this.patternRepo.findOne({pattern_identification: pattern_identification.toUpperCase()})
+    }
 
     async getAllPatterns(filter: GetPatternsDTO) {
 
@@ -25,9 +34,73 @@ export class PatternService {
     }
 
     async createProduct(product: CreatePatternDTO) {
-        product.pattern_name = product.title.toLowerCase().replace(/ /g, "_");
-        const data = await this.patternRepo.create(product);
-        return data;
+        try{
+            const pattern = await this.getPatternByIdentification(product.pattern_identification.toUpperCase());
+            
+            if(pattern){
+                throw new ErrorManager({type: "CONFLICT", message: `Pattern Identification Already Exist`, context: PatternService.name})
+            }
+
+            const variants: PatternVariant[] = [];
+
+            await Promise.all(product.variants.map( async (variant: string | CreatePatternVariantDTO) => {
+                if(typeof variant === 'string'){
+                    const exist = await this.patternVariantService.findVariantByName(variant.toUpperCase());
+                    if(!exist){
+                        throw new ErrorManager({type: "NOT_FOUND", message: `Variant Pattern Not Exist`, context: PatternService.name})
+                    }
+                    variants.push(exist);
+                }else if(typeof variant === 'object'){
+                    const exist = await this.patternVariantService.findVariantByName(variant.variant_identification.toUpperCase());
+                    if(exist){
+                        variants.push(exist);
+                    }else {
+                        const createdVariant = await this.patternVariantService.createVariantPattern(variant);
+                        if(!createdVariant){
+                            throw new ErrorManager({type: "NOT_FOUND", message: `Variant Pattern ${variant.variant_identification} was not created`, context: PatternService.name})
+                        }
+                        variants.push(createdVariant);
+                    }
+                }else{
+                    throw new ErrorManager({type: "BAD_REQUEST", message: `Variant Pattern Not Valid`, context: PatternService.name});
+                }
+            }));
+
+            const categories: Category[] = []; 
+
+            await Promise.all(product.categories.map( async (category: string | CreateCategoryDTO) => {
+                if(typeof category === 'string'){
+                    const exist = await this.categoryService.findCategoryByName(category.toLowerCase());
+                    if(!exist){
+                        throw new ErrorManager({type: "NOT_FOUND", message: `Variant Pattern ${category} Not Exist`, context: PatternService.name})
+                    }
+                }else if (typeof category === 'object'){
+                    const exist = await this.categoryService.findCategoryByName(category.name.toLowerCase());
+                    if(exist){
+                        categories.push(exist);
+                    }else{
+                        const createdCategory = await this.categoryService.createCategory(category);
+                        if(!createdCategory){
+                            throw new ErrorManager({type: "NOT_FOUND", message: `Category ${category.name} was not created`, context: PatternService.name});
+                        }
+                        categories.push(createdCategory);
+                    }
+                }
+            }))
+
+            const saveProduct = {
+                ...product,
+                pattern_identification: product.pattern_identification.toUpperCase(),
+                variants: variants,
+                category: categories
+            }
+
+            const data = await this.patternRepo.create(saveProduct);
+            return data;
+        }catch(err){
+            console.log(err)
+            ErrorManager.dispatchError(!err.message? err: err.message);
+        }
     }
 
     async addTagToPattern (patternId: string , body: AddTagsToPatternDTO ) {
@@ -36,7 +109,7 @@ export class PatternService {
 
         await this.checkIfExistPattern(patternId);
         
-        const filtredTagsExists = tags.filter(async ( tagId ) => await this.patternTagService.findTag(tagId));
+        const filtredTagsExists = tags.filter(async ( tagId ) => await this.patternTagService.findTagById(tagId));
         if(!filtredTagsExists.length) throw new HttpException('Tags Not Found', 404);
 
 

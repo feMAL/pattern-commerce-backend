@@ -1,6 +1,7 @@
 import { IsArray, IsNotEmpty, IsOptional, IsString } from "@nestjs/class-validator";
 import { ApiProperty } from "@nestjs/swagger"
-import { ObjectId } from "mongoose";
+import { CreatePatternTagDTO } from "./pattern-tag.dto";
+import { Type } from "class-transformer";
 
 export class UpdateVariantPatternDTO {
 
@@ -12,6 +13,15 @@ export class UpdateVariantPatternDTO {
         required : false
     })
     name?: string
+
+    @IsOptional()
+    @IsArray()
+    @ApiProperty({
+        type: String,
+        required : false,
+        isArray: true
+    })
+    image?: string[];
 
     @IsOptional()
     @IsString()
@@ -33,7 +43,7 @@ export class UpdateVariantPatternDTO {
 
 }
 
-export class CreateVariantPatternDTO {
+export class CreatePatternVariantDTO {
     
     @IsString()
     @IsNotEmpty()
@@ -41,7 +51,7 @@ export class CreateVariantPatternDTO {
         type: String,
         required : true
     })
-    name: string
+    variant_identification: string
     
     @IsOptional()
     @IsArray()
@@ -51,6 +61,22 @@ export class CreateVariantPatternDTO {
         isArray: true
     })
     image: string[]
+
+    @IsString()
+    @ApiProperty({
+        type: String,
+        required : true
+    })
+    description: string;
+
+    @IsArray()
+    @Type(()=> CreatePatternTagDTO)
+    @ApiProperty({
+        type: String,
+        required : false,
+        isArray: true
+    })
+    tags?: string[] | CreatePatternTagDTO[];
     
     @IsString()
     @IsNotEmpty()

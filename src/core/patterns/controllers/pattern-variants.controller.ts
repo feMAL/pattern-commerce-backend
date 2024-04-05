@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Param, Post, Query } from "@nestjs/common";
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
-import { CreateVariantPatternDTO } from "../dtos";
+import { CreatePatternVariantDTO } from "../dtos";
 import { PatternVariantService } from "../services/pattern-variant.service";
 
 
@@ -17,8 +17,8 @@ export class PatternVariantController {
         summary: "Add Variant to Product"
     })
     @Post()
-    @ApiBody({type: CreateVariantPatternDTO})
-    async addVariant ( @Body() body: CreateVariantPatternDTO): Promise<any>{
+    @ApiBody({type: CreatePatternVariantDTO})
+    async createVariant ( @Body() body: CreatePatternVariantDTO): Promise<any>{
         return await this.patternVariantService.createVariantPattern(body);
     }
 

@@ -47,6 +47,7 @@ import { map } from 'rxjs';
         /* istanbul ignore next */
       } catch (error) {
         /* istanbul ignore next */
+        console.log(error)
         throw new HttpException({ errors: error.response.data.errors }, error.response.status);
       }
     }

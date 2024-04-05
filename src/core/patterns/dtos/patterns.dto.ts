@@ -1,5 +1,10 @@
 import { IsArray, IsBoolean, IsNumber, IsOptional, IsString } from "@nestjs/class-validator";
 import { ApiProperty } from "@nestjs/swagger"
+import { PatternTypes } from "../enums/pattern-types.enum";
+import { CreatePatternVariantDTO } from "./pattern-variant.dto";
+import { CreatePatternTagDTO } from "./pattern-tag.dto";
+import { CreateCategoryDTO } from "./category.dto";
+import { Type } from "class-transformer";
 
 export class GetPatternsDTO {
 
@@ -23,23 +28,19 @@ export class GetPatternsDTO {
 
 export class CreatePatternDTO {
 
-    pattern_name?: string;
-
-    @IsOptional()
-    @IsArray()
-    @ApiProperty({
-        type: String,
-        required : false,
-        isArray: true
-    })
-    image: string[];
-
     @IsString()
     @ApiProperty({
         type: String,
         required : true
     })
-    title: string;
+    pattern_identification: string;
+
+    @IsOptional()
+    @ApiProperty({
+        type: String,
+        required : false
+    })
+    title?: string;
 
     @IsNumber()
     @ApiProperty({
@@ -47,13 +48,6 @@ export class CreatePatternDTO {
         required : true
     })
     price: number;
-
-    @IsString()
-    @ApiProperty({
-        type: String,
-        required : true
-    })
-    description: string;
 
     @IsBoolean()
     @ApiProperty({
@@ -65,9 +59,28 @@ export class CreatePatternDTO {
     @IsString()
     @ApiProperty({
         type: String,
+        enum: PatternTypes,
         required : true
     })
-    type: string;
+    type: PatternTypes;
+
+    @IsArray()
+    @Type(()=> CreatePatternVariantDTO)
+    @ApiProperty({
+        type: String,
+        required : false,
+        isArray: true
+    })
+    variants?: string[] | CreatePatternVariantDTO[];
+
+    @IsArray()
+    @Type(()=> CreateCategoryDTO)
+    @ApiProperty({
+        type: String,
+        required : false,
+        isArray: true
+    })
+    categories?: string[] | CreateCategoryDTO[];
 
 }
 
@@ -80,6 +93,7 @@ export class AddVariantsToPatternDTO {
         isArray: true
     })
     variants: string[];
+
 }
 
 

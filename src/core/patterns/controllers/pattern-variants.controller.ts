@@ -2,6 +2,7 @@ import { Body, Controller, Get, Param, Post, Query } from "@nestjs/common";
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { CreatePatternVariantDTO } from "../dtos";
 import { PatternVariantService } from "../services/pattern-variant.service";
+import { PatternVariant } from "../models";
 
 
 @ApiTags('Patterns Variants')
@@ -18,7 +19,7 @@ export class PatternVariantController {
     })
     @Post()
     @ApiBody({type: CreatePatternVariantDTO})
-    async createVariant ( @Body() body: CreatePatternVariantDTO): Promise<any>{
+    async createVariant ( @Body() body: CreatePatternVariantDTO): Promise<PatternVariant>{
         return await this.patternVariantService.createVariantPattern(body);
     }
 

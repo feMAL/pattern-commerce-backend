@@ -2,8 +2,8 @@ import { Body, Controller, Get, Param, Post, Query, UseGuards } from "@nestjs/co
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { AddTagsToPatternDTO, GetPatternsDTO, CreatePatternDTO, AddVariantsToPatternDTO } from "../dtos";
 import { PatternService } from "../services/pattern.service";
-import { AccessValidationGuard } from "src/common/guards/access-validation.guard";
-
+import { AccessValidationGuard } from "../../../common/guards/access-validation.guard";
+import { Pattern } from "../models";
 
 @ApiTags('Patterns')
 @Controller('patterns')
@@ -16,19 +16,17 @@ export class PatternsController {
     @ApiOperation({
         summary: "Get All Patterns"
     })
-    @ApiResponse({
-    })
     @Get()
-    async getProducts(@Query() filter: GetPatternsDTO): Promise<any> {
-        return  await this.patternService.getAllPatterns(filter);
+    async getProducts(@Query() filter: GetPatternsDTO): Promise<Pattern[]> {
+        return await this.patternService.getAllPatterns(filter);
     }
 
     @ApiOperation({
         summary: "Get Patterns By ID"
     })
-    @Get(':productID')
-    async getProductsbyId(@Param('productID') productID: string) {
-
+    @Get(':product_id')
+    async getProductsbyPatternIdentification(@Param('product_id') productID: string): Promise<Pattern> {
+        return await this.patternService.getPatternByIdentification(productID);
     }
 
     //@UseGuards(AccessValidationGuard)
@@ -41,7 +39,7 @@ export class PatternsController {
         return await this.patternService.createProduct(body);
     }
 
-    @ApiOperation({
+    /*@ApiOperation({
         summary: "Add Tags to Product"
     })
     @Post(':patternID/tags')
@@ -58,6 +56,6 @@ export class PatternsController {
     @ApiBody({type: AddTagsToPatternDTO})
     async addVariant (@Param('patternID') patternId: string, @Body() body: AddVariantsToPatternDTO): Promise<any>{
         return await this.patternService.addVariantsToPattern(patternId, body);
-    }
+    }*/
 
 }

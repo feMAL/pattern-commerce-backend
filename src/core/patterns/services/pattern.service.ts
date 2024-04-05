@@ -24,16 +24,15 @@ export class PatternService {
         return this.patternRepo.findOne({pattern_identification: pattern_identification.toUpperCase()})
     }
 
-    async getAllPatterns(filter: GetPatternsDTO) {
+    async getAllPatterns(filter: GetPatternsDTO): Promise<Pattern[]> {
 
         if (filter.id! && !filter.name) filter = {};
-        const data = await this.patternRepo.find(filter)
 
-        return data;
+        return await this.patternRepo.find(filter);
 
     }
 
-    async createProduct(product: CreatePatternDTO) {
+    async createProduct(product: CreatePatternDTO): Promise<Pattern> {
         try{
             const pattern = await this.getPatternByIdentification(product.pattern_identification.toUpperCase());
             
@@ -98,22 +97,28 @@ export class PatternService {
             const data = await this.patternRepo.create(saveProduct);
             return data;
         }catch(err){
-            console.log(err)
             ErrorManager.dispatchError(!err.message? err: err.message);
         }
     }
 
     async addTagToPattern (patternId: string , body: AddTagsToPatternDTO ) {
 
-        const { tags } = body;
+        try{
+            const { tags } = body;
 
-        await this.checkIfExistPattern(patternId);
-        
-        const filtredTagsExists = tags.filter(async ( tagId ) => await this.patternTagService.findTagById(tagId));
-        if(!filtredTagsExists.length) throw new HttpException('Tags Not Found', 404);
+            await this.checkIfExistPattern(patternId);
+            
+            const filtredTagsExists = tags.filter(async ( tagId ) => await this.patternTagService.findTagById(tagId));
+            if(!filtredTagsExists.length) throw new HttpException('Tags Not Found', 404);
+
+            
+            /** continue */   
+        }catch(err){
+            ErrorManager.dispatchError(!err.message? err: err.message);
+        }
 
 
-        /** continue */
+
 
     }
 

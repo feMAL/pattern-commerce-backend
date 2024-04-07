@@ -21,6 +21,7 @@ import ServicesConfig from './services/configuration';
                 MongoDbConfig,
                 ServicesConfig
             ],
+            isGlobal:true,
             validationSchema
         })
     ],

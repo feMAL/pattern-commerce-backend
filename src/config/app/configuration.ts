@@ -13,5 +13,7 @@ export default registerAs('app', () => ({
     allowedMethods: process.env.APP_ALLOWED_METHODS,
     corsEnabled: process.env.APP_CORS_ENABLED,
     swaggerEnabled: process.env.APP_SWAGGER_ENABLED,
-    swaggerPath: process.env.APP_SWAGGER_PATH
+    swaggerPath: process.env.APP_SWAGGER_PATH,
+    paypalClientId: process.env.PAYPAL_CLIENT_ID,
+    paypalSecretId: process.env.PAYPAL_SECRET_ID
 }))

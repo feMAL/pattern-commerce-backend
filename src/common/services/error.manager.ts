@@ -6,8 +6,13 @@ export class ErrorManager extends Error {
     }
 
     static dispatchError(message: string){
-        const [status, text, context] = message.split(" :: ");
-        Logger.error(text, context);
+        let [status, text, context] = message.split(" :: ");
+        if(!text && !context){
+            Logger.error(message);
+            text = message            
+        }else{
+            Logger.error(text, context);
+        }
         if(status){
             throw new HttpException(text,HttpStatus[status]);
         }else {
